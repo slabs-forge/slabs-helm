@@ -1,0 +1,4 @@
+mockapp:
+  title: Mock Application
+  message: "Welcome from {{ .Release.Namespace }}/{{ .Release.Name }}"
+

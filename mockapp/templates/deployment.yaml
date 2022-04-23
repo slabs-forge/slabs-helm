@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "common.names.fullname" . }}
+  labels: {{- include "common.labels.standard" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels: {{- include "common.labels.matchLabels" . | nindent 6 }}
+  replicas: 1
+  template:
+    metadata:
+      labels: {{- include "common.labels.standard" . | nindent 8 }}
+    spec:
+      containers:
+      - name: toolbox
+        image: sebetln/toolbox
+      - name: mockapp
+        image: sebetln/mockapp
+        ports:
+        - name: http
+          containerPort: 3000
+        volumeMounts:
+        - name: config-mockapp
+          mountPath: "/app/public"
+          readOnly: true
+      volumes:
+      - name: config-mockapp
+        configMap:
+          name: {{ include "common.names.fullname" . }}-mockap-cm
+  

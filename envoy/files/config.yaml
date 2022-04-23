@@ -1,0 +1,39 @@
+node:
+  cluster: sebetln
+  id: envoy
+admin:
+  address:
+    socket_address:
+      address: 0.0.0.0
+      port_value: 9000
+dynamic_resources:
+  lds_config:
+    path: /var/lib/envoy/lds.yaml
+static_resources:
+  clusters:
+  - name: blue
+    connect_timeout: 5s
+    type: LOGICAL_DNS
+    lb_policy: ROUND_ROBIN
+    load_assignment:
+      cluster_name: blue
+      endpoints:
+      - lb_endpoints:
+        - endpoint:
+            address:
+              socket_address:
+                address: app-mockapp-svc-http.blue.svc.cluster.local        
+                port_value: 80
+  - name: yellow
+    connect_timeout: 5s
+    type: LOGICAL_DNS
+    lb_policy: ROUND_ROBIN
+    load_assignment:
+      cluster_name: yellow
+      endpoints:
+      - lb_endpoints:
+        - endpoint:
+            address:
+              socket_address:
+                address: app-mockapp-svc-http.yellow.svc.cluster.local        
+                port_value: 80

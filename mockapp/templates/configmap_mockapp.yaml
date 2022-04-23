@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "common.names.fullname" . }}-mockap-cm
+data:
+  index.html: |+
+    <!doctype html>
+    <html>
+    <head>
+        <title>{{ .Values.mockapp.title }}</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <p>{{ tpl .Values.mockapp.message . }}</p>
+    </body>
+    </html>
+
+  style.css: |+
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+
+    

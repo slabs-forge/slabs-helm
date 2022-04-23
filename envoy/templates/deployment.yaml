@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "common.names.fullname" . }}
+  labels: {{- include "common.labels.standard" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels: {{- include "common.labels.matchLabels" . | nindent 6 }}
+  replicas: 1
+  template:
+    metadata:
+      labels: {{- include "common.labels.standard" . | nindent 8 }}
+    spec:
+      containers:
+      - name: toolbox
+        image: sebetln/toolbox
+        volumeMounts:
+        - name: config-dynamic
+          mountPath: "/var/lib/envoy"
+      - name: envoy
+        image: sebetln/envoy
+        ports:
+        - name: proxy
+          containerPort: 10000
+        - name: admin
+          containerPort: 9000
+        volumeMounts:
+        - name: config-static
+          mountPath: "/etc/envoy"
+        - name: config-dynamic
+          mountPath: "/var/lib/envoy"
+      initContainers:
+      - name: dyna-setup
+        image: sebetln/sideshell
+        command: [ "sh", "-c" , "cp /etc/envoy/lds.yaml /var/lib/envoy" ]
+        volumeMounts:
+        - name: config-static
+          mountPath: "/etc/envoy"
+        - name: config-dynamic
+          mountPath: "/var/lib/envoy"
+      volumes:
+      - name: config-static
+        configMap:
+          name: {{ include "common.names.fullname" . }}-envoy-cm
+      - name: config-dynamic
+        emptyDir: {}
+  

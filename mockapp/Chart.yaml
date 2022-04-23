@@ -1,0 +1,10 @@
+apiVersion: v2
+name: mockapp
+version: 0.0.1
+description: MockApp to play with envoy
+appVersion: 0.0.1
+dependencies:
+  - name: common
+    version: 1.x.x
+    repository: "@bitnami"
+
